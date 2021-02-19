@@ -10,6 +10,7 @@ export const IncomeExpense = () => {
 
     const expenditure = transactions.filter(transaction => transaction.amount < 0 );
     const totalExpenditure = expenditure.reduce((total, obj) => (total + obj.amount), 0);
+    console.log(expenditure);
     return (
 
         <div className="inc-exp-container">
