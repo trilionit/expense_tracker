@@ -9,13 +9,11 @@ export const AddTransaction = () => {
 
     const handleSubmit = e => {
 
-        e.preventDefault();
-        let _id = Math.floor(Math.random() * 100000000);
-        
-        const expense = { _id, name, amount: parseInt(amount) };
-
+        e.preventDefault();        
+        const expense = {name, amount: parseInt(amount) };
         AddExpense(expense);
-
+        setName("");
+        setAmount(0);
     }
     return (
         <>

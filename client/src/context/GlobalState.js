@@ -1,13 +1,10 @@
 import React, { createContext, useReducer } from "react";
+import axios from "axios";
+
 import AppReducer from "./AppReducer";
 
 const initialState ={
-    transactions: [
-        { _id: 1, name: 'Flower', amount: -20 },
-        { _id: 2, name: 'Salary', amount: 300 },
-        { _id: 3, name: 'Book', amount: -10 },
-        { _id: 4, name: 'Camera', amount: 150 }
-    ]
+    transactions: []
 }
 
 //create context
@@ -18,13 +15,34 @@ export const GlobalContext = createContext(initialState);
 export const GlobalProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
-    const AddExpense = expense => {
-        dispatch({
-            type: "ADD_TRANSACTION",
-            payload: expense
-        })
+    const getTransactions = async () => {
+        try {
+            const allTransactions = await axios.get("/api/transactions");
+            console.log(allTransactions.data);
+            dispatch({
+                type:"GET_TRANSACTIONS",
+                payload: allTransactions.data
+            })
+        }catch(err) {
+            console.log(`Failed to fetch transactions. Error returned: ${err}`);
+        }
+    }
+    const AddExpense = async  expense => {
+    
+            try {
+                const add= await axios.post("/api/transactions", expense)
+                dispatch({
+                    type: "ADD_TRANSACTION",
+                    payload: add.data
+                })
+            }catch(err) {
+                console.log(`Failed to Add A New Transaction. Error returned: ${err}`);
+            }
+            
+        
     }
     const DeleteTransaction = id => {
+        console.log(id);
         dispatch({
             type: "DELETE_TRANSACTION",
             payload: id
@@ -33,6 +51,7 @@ export const GlobalProvider = ({ children }) => {
     return(
         <GlobalContext.Provider value={{
             transactions: state.transactions,
+            getTransactions,
             AddExpense,
             DeleteTransaction
         }}>
