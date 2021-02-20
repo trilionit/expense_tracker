@@ -1,18 +1,30 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const colors = require("colors");
-const app = express();
+const bodyParser = require("body-parser");
 
+//config
 dotenv.config({path: "../config/config.env"});
+const connectDB = require("./config/connectDB");
+
+
+//routes
+const transactions = require("./routes/transactions");
+
+const app = express();
 
 
 //connectdb
-const connectDB = require("./config/connectDB");
 connectDB();
 
-app.get("/", (req, res)=> {
-    res.send("TRANSACTIONS");
-})
+//middleware
+app.use(bodyParser.json());
+
+app.use("/api/transactions", transactions);
+
+
+
+
 
 const PORT = process.env.PORT || 5000;
 const node_env = process.env.NODE_ENV;
